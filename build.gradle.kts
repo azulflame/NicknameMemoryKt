@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.tasks.Jar
 
 plugins {
     kotlin("jvm") version "1.4.21"
@@ -26,4 +27,19 @@ dependencies {
 	implementation("mysql", "mysql-connector-java","8.0.19")
 	implementation("com.jessecorbett:diskord-jvm:1.8.0")
 	implementation("io.github.microutils:kotlin-logging:2.0.4")
+}
+val fatJar = task("fatJar", type = Jar::class) {
+	baseName = "${project.name}-fat"
+	manifest {
+		attributes["Implementation-Title"] = "Gradle Jar File Example"
+		attributes["Implementation-Version"] = version
+		attributes["Main-Class"] = "com.mkyong.DateUtils"
+	}
+	from(configurations.runtimeClasspath.get().map({ if (it.isDirectory) it else zipTree(it) }))
+	with(tasks.jar.get() as CopySpec)
+}
+tasks {
+	"build" {
+		dependsOn(fatJar)
+	}
 }
