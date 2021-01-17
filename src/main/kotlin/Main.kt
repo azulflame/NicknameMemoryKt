@@ -4,6 +4,7 @@ import com.jessecorbett.diskord.dsl.bot
 import com.jessecorbett.diskord.dsl.command
 import com.jessecorbett.diskord.dsl.commands
 import com.jessecorbett.diskord.util.*
+import com.sun.javafx.application.PlatformImpl.startup
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -23,9 +24,11 @@ val log: Logger = KotlinLogging.logger { }
 
 suspend fun main()
 {
+	log.info("checking envvars")
 	val missingEnvs = listOf("TOKEN", "OWNERID", "DBURL", "DBPASS", "DBUSER", "LOGCHANNEL", "PREFIX").filter { x ->
 		!getenv().keys.contains(x)
 	}
+	log.info("finished checking envvars")
 	if(missingEnvs.isNotEmpty())
 	{
 		println("The following environment variables are missing:")
@@ -39,8 +42,14 @@ suspend fun main()
 	val rejectedReaction = "❌"
 	val serversRun: HashSet<String> = HashSet()
 
+
+	log.info("starting bot")
 	bot(getenv("TOKEN"), intents = GatewayIntents.ALL)
 	{
+		startup()
+		{
+			log.info("bot startup reached")
+		}
 		commands(prefix)
 		{
 			command("shutdown")

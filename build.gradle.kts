@@ -27,9 +27,10 @@ dependencies {
 	implementation("mysql", "mysql-connector-java","8.0.19")
 	implementation("com.jessecorbett:diskord-jvm:1.8.0")
 	implementation("io.github.microutils:kotlin-logging:2.0.4")
+	implementation("org.slf4j:slf4j-simple:1.6.1")
 }
 val fatJar = task("fatJar", type = Jar::class) {
-	baseName = "${project.name}-fat"
+	baseName = "${project.name}-fatjar"
 	manifest {
 		attributes["Implementation-Title"] = "Gradle Jar File Example"
 		attributes["Implementation-Version"] = version
