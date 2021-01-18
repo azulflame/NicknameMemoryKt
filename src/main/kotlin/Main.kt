@@ -128,7 +128,8 @@ suspend fun main()
 			}
 		}
 		guildMemberUpdated {
-			val emptyUpdate = it.nickname.isNullOrBlank() && it.roles.isEmpty() // is this an empty update, possibly removed from guild
+			val emptyUpdate =
+				it.nickname.isNullOrBlank() && it.roles.isEmpty() // is this an empty update, possibly removed from guild
 			// if it is not an empty update, short circuit the user check
 			if (!emptyUpdate || clientStore.guilds[it.guildId].hasUser(it.user.id))
 			{
@@ -269,12 +270,5 @@ suspend fun Bot.getLogChannel(guildId: String): ChannelClient?
  */
 suspend fun GuildClient.hasUser(userID: String): Boolean
 {
-	return try
-	{
-		this.getMember(userID)
-		true
-	} catch (ex: Exception)
-	{
-		false
-	}
+	return kotlin.runCatching { this.getMember(userID) }.isSuccess
 }
